@@ -6,11 +6,17 @@ def solution(places):
     dy = [0, 0, -1, 1]
     
     for place in places:
+        
+        # ['P', 'O', 'O', 'P'] 형태로 변환
         tmp = []
         for item in place:
             tmp.append(list(item))
         place = tmp
+        
+        # 이동 거리 저장 (P와 P사이 거리 계산)
         dist = [[-1]*5 for _ in range(5)]
+        
+        # 거리 2이하일 경우 while, for문 빠져나오게 하기 위한 변수
         flag = False
         def bfs(x, y):
             nonlocal place, flag
@@ -32,6 +38,7 @@ def solution(places):
                             queue.append((nx, ny))
                 if flag:
                     break
+        
         for i in range(5):
             if flag == True:
                 break
