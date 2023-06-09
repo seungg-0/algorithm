@@ -1,3 +1,5 @@
+# 실수한 부분 : 1. 로직은 sort 가정하고 짰는데 sort 안해줌 (로직, 문제 조건 확인하기) 2. for문 돌릴 때 리스트 크기 변하게 짬
+
 def solution(n, lost, reserve):
     answer = 0
     lost.sort()
