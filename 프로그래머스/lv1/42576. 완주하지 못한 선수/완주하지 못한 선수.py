@@ -1,3 +1,6 @@
+# sort() 사용에서 코드 개선 (해시 사용)
+# N(logN) -> N
+
 def solution(participant, completion):
     answer = ''
 
