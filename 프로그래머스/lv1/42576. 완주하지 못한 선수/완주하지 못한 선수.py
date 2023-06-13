@@ -1,14 +1,16 @@
 def solution(participant, completion):
     answer = ''
 
-    participant.sort()
-    completion.sort()
-        
-    for i in range(len(completion)):
-        if participant[i] != completion[i]:
-            answer = participant[i]
-            break
-    if answer == '':
-        answer = participant[-1]
+    participant_dict = {}
+    completion_dict = {}
+    for x in participant:     
+        participant_dict[x] = participant_dict.get(x, 0) + 1
+    for x in completion:
+        completion_dict[x] = completion_dict.get(x, 0) + 1
 
-    return answer
+    for key, value in completion_dict.items():
+        participant_dict[key] -= value
+    
+    answer = [key for key, value in participant_dict.items() if value > 0]
+
+    return ''.join(answer)
