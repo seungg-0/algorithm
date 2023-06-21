@@ -28,52 +28,52 @@ def solution(park, routes):
         if direction == 'E':
             for i in range(n):
                 nx, ny = x+dx[0], y+dy[0]
-                if 0 <= nx < len(graph) and 0 <= ny < len(graph[0]) and graph[nx][ny] != 'X': # 이동 할 수 있으면  
+                if 0 <= nx < len(graph) and 0 <= ny < len(graph[0]) and graph[nx][ny] != 'X': # 이동 할 수 있는지 확인
                     x, y = nx, ny
                 else: # 이동 불가능할 경우 다음 명령으로
                     available = False
                     x, y = xs, ys
                     break
-            if available:
+            if available: # 이동 가능하다면 위치 바꿔주기
                 graph[xs][ys] = 'O'
                 graph[x][y] = 'S'
                 xs, ys = x, y
         elif direction == 'W':
             for i in range(n):
                 nx, ny = x+dx[1], y+dy[1]
-                if 0 <= nx < len(graph) and 0 <= ny < len(graph[0]) and graph[nx][ny] != 'X': # 이동 할 수 있으면  
+                if 0 <= nx < len(graph) and 0 <= ny < len(graph[0]) and graph[nx][ny] != 'X': # 이동 할 수 있는지 확인
                     x, y = nx, ny
                 else: # 이동 불가능할 경우 다음 명령으로
                     available = False
                     x, y = xs, ys
                     break
-            if available:
+            if available: # 이동 가능하다면 위치 바꿔주기
                 graph[xs][ys] = 'O'
                 graph[x][y] = 'S'
                 xs, ys = x, y
         elif direction == 'S':
             for i in range(n):
                 nx, ny = x+dx[2], y+dy[2]
-                if 0 <= nx < len(graph) and 0 <= ny < len(graph[0]) and graph[nx][ny] != 'X': # 이동 할 수 있으면
+                if 0 <= nx < len(graph) and 0 <= ny < len(graph[0]) and graph[nx][ny] != 'X': # 이동 할 수 있는지 확인
                     x, y = nx, ny
                 else: # 이동 불가능할 경우 다음 명령으로
                     x, y = xs, ys
                     available = False
                     break
-            if available:
+            if available: # 이동 가능하다면 위치 바꿔주기
                 graph[xs][ys] = 'O'
                 graph[x][y] = 'S'
                 xs, ys = x, y
         elif direction == 'N':
             for i in range(n):
                 nx, ny = x+dx[3], y+dy[3]
-                if 0 <= nx < len(graph) and 0 <= ny < len(graph[0]) and graph[nx][ny] != 'X': # 이동 할 수 있으면  
+                if 0 <= nx < len(graph) and 0 <= ny < len(graph[0]) and graph[nx][ny] != 'X': # 이동 할 수 있는지 확인
                     x, y = nx, ny
                 else: # 이동 불가능할 경우 다음 명령으로
                     available = False
                     x, y = xs, ys
                     break
-            if available:
+            if available: # 이동 가능하다면 위치 바꿔주기
                 graph[xs][ys] = 'O'
                 graph[x][y] = 'S'
                 xs, ys = x, y
