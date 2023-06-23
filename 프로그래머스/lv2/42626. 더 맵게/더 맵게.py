@@ -1,24 +1,19 @@
+# 힙 함수 활용하기
+# heapq.heappush(heap, item) : item을 heap에 추가
+# heapq.heappush(heap, 50)
+# heapq.heappop(heap) : heap에서 가장 작은 원소를 pop & 리턴. 비어 있는 경우 IndexError가 호출됨. 
+# result = heapq.heappop(heap)
+# heapq.heapify(x) : 리스트 x를 즉각적으로 heap으로 변환함 (in linear time, O(N) )
 import heapq
 
 def solution(scoville, K):
-    # 리스트를 힙 구조로 변환
+    answer = 0
     heapq.heapify(scoville)
-    result = 0
 
-    while len(scoville) >= 2 :
-        # 힙에서 최솟값
-        min_ = heapq.heappop(scoville) 
-        # 액체의 최솟값이 K보다 크다는 조건 만족
-        if min_ >= K: 
-            return result 
-        # 두 번째로 작은 값 가져와서 두 배를 한 후 가장 작은 값과 합친 값을 힙에 삽입
-        else: 
-            min_2 = heapq.heappop(scoville) 
-            heapq.heappush(scoville, min_ + (min_2 * 2))
-            result += 1
-  
-    if scoville[0] > K:
-        return result
+    while scoville[0] < K: # 가장 작은 값이 K보다 작으면
+        heapq.heappush(scoville, heapq.heappop(scoville) + heapq.heappop(scoville)*2) # 섞기
+        answer += 1
+        if len(scoville) == 1 and scoville[0] < K: # 계속 섞으면 마지막은 1, 마지막이 K보다 작으면
+            return -1
 
-    else:
-        return -1
+    return answer
