@@ -1,4 +1,4 @@
-# 힙 함수 활용하기
+# heapq 자료형 활용하기
 # heapq.heappush(heap, item) : item을 heap에 추가
 # heapq.heappush(heap, 50)
 # heapq.heappop(heap) : heap에서 가장 작은 원소를 pop & 리턴. 비어 있는 경우 IndexError가 호출됨. 
