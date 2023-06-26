@@ -1,5 +1,5 @@
 # ICN 출발
-
+# 복습 해야함 (이해 덜함)
 def solution(tickets):
     answer = []
     tickets.sort()
