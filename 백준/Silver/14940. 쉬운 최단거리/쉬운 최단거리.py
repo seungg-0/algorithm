@@ -9,7 +9,7 @@ graph = []
 for i in range(r):
     graph.append(list(map(int, input().split(" "))))
 
-# 2인 좌료 찾기
+# 2인 좌표 찾기
 for i in range(r):
     for j in range(c):
         if graph[i][j] == 2:
