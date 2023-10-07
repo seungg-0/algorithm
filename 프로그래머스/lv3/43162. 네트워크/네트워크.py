@@ -1,36 +1,37 @@
-# 건너건너 연결돼있어도 같은 네트워크상에 존재
-# 네트워크의 갯수 반환
-from collections import deque
-
 def solution(n, computers):
-    connected_info = [[] for _ in range(n+1)]
-    visited = [False]*(n+1)
+    answer = 0
+    links = []
     
-    for i in range(n):
-        for j in range(n):
-            if i == j:
-                continue
-            if computers[i][j] == 1:
-                # i에 j가 연결되어 있다
-                connected_info[i].append(j)
-                connected_info[j].append(i)
+    for i in range(len(computers)-1):
+        for j in range(1+i, len(computers[0])):
+            if computers[i][j] == 1 and i != j:
+                links.append((i, j))
+    
+    # 연결된 노드가 없는 경우
+    if len(links) == 0: 
+        return len(computers)
 
-    queue = deque()
-    count = 0
-    def bfs(start, visited):
-        queue.append(start)
-        while queue:
-            now = queue.popleft()
-            for i in connected_info[now]:
-                if not visited[i]:
-                    visited[i] = True
-                    queue.append(i)
-        return True
+    visited = [False]*len(links)
     
-    for i in range(n):
+    def dfs(net):
+        for idx, link in enumerate(links):
+            if ((link[0] in net) or (link[1] in net)) and not visited[idx]:
+                visited[idx] = True
+                dfs(net+[link[0], link[1]])
+       
+    for i in range(len(links)):
         if not visited[i]:
-            if bfs(i, visited):
-                count += 1
-    answer = count
+            visited[i] = True
+            dfs([links[i][0], links[i][1]]) # dfs가 완료되면 (하나의 네트워크 탐색 완료되면)
+            answer += 1 # 네트워크 갯수 하나 증가
+            
+    # 링크로 연결되지 않은 단일 네트워크 수를 세어준다.
+    set_list = []
+    for a, b in links:
+        set_list.append(a)
+        set_list.append(b)
+    set_list = set(set_list)
     
+    # 노드 여러개 가진 네트워크 + 단일 네트워크
+    answer += (len(computers) - len(set_list)) 
     return answer
