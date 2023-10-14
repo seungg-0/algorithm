@@ -11,7 +11,6 @@
 #                 link.update([node1], [node2])
 #                 answer += cost
 #                 break
-  
 #     return answer
 
 def solution(n, costs):
@@ -20,8 +19,9 @@ def solution(n, costs):
     link = set([costs[0][0]])
 
     # Kruskal 알고리즘으로 최소 비용 구하기
-    while len(link) != n:
+    while len(link) < n:
         for v in costs:
+            # print(v, v[0], v[1], v[2])
             if v[0] in link and v[1] in link:
                 continue
             if v[0] in link or v[1] in link:
@@ -30,3 +30,4 @@ def solution(n, costs):
                 break
                 
     return answer
+
