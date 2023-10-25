@@ -7,7 +7,7 @@ def solution(operations):
     for operation in operations:
         left, right = operation.split(" ")
         if left == 'I': # 큐에 주어진 숫자 삽입
-            heappush(queue, float(right))
+            heappush(queue, int(right))
         elif right == '1': # 큐에서 최댓값을 삭제
             if len(queue) == 0:
                 continue
@@ -25,10 +25,10 @@ def solution(operations):
         else: # 큐에서 최솟값을 삭제
             if len(queue) >= 1: # 최솟값 삭제
                 heappop(queue)
-      
+    
     if len(queue) == 0:
         answer = [0, 0]
     else:
         answer.append(max(queue))
-        answer.append(min(queue))
+        answer.append(queue[0])
     return answer
