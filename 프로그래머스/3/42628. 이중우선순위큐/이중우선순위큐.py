@@ -1,4 +1,4 @@
-from heapq import heapify, heappop, heappush
+from heapq import heapify, heappop, heappush, nlargest
 
 def solution(operations):
     answer = []
@@ -15,13 +15,8 @@ def solution(operations):
                 heappop(queue)
             else:
                 # 최대 힙 만들어주기
-                reverse_sign = lambda x:x*(-1)
-                max_heap = list(map(reverse_sign, queue))
-                heapify(max_heap)
-                max_heap = list(map(reverse_sign, max_heap))
-                max_heap.pop(0) # 최댓값 삭제
-                heapify(max_heap)
-                queue = max_heap
+                queue = nlargest(len(queue), queue)[1:]
+                heapify(queue)
         else: # 큐에서 최솟값을 삭제
             if len(queue) >= 1: # 최솟값 삭제
                 heappop(queue)
