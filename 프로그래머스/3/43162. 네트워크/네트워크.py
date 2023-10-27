@@ -2,31 +2,32 @@ from collections import deque
 
 def solution(n, computers):
     answer = 0
-    visited = [False]*len(computers)
-    linked = [[] for _ in range(len(computers))]
+    row, col = len(computers), len(computers[0])
+    connected = [[] for _ in range(row)]
+    visited = [False]*n
     
-    for i in range(len(computers)):
-        for j in range(len(computers[0])):
+    for i in range(row):
+        for j in range(col):
             if computers[i][j] == 1:
-                linked[i].append(j)
-                linked[j].append(i)
+                connected[i].append(j)
+                connected[j].append(i)
     
-    queue = deque()
     def bfs():
         while queue:
             node = queue.popleft()
-            for n in linked[node]:
-                if not visited[n]:
+            for n in connected[node]:
+                if node != n and not visited[n]:
                     visited[n] = True
-                    queue.append(n) 
+                    queue.append(n)
         return True
+      
     
-    for i in range(len(computers)):
+    for i in range(n):
         if not visited[i]:
             visited[i] = True
+            queue = deque()
             queue.append(i)
-            if bfs(): # 하나의 노트 묶음 탐색
-                answer += 1
-    
+            bfs()
+            answer += 1
     
     return answer
