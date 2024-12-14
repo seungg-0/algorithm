@@ -3,18 +3,16 @@ import java.util.Scanner;
 public class Main{
     public static void main(String[] args){
         Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        int num = sc.nextInt();
-        sc.nextLine();
+        int N = sc.nextInt();
+        int X = sc.nextInt();
+        int array[] = new int[N];
         
-        int[] a = new int[n];  
-        for (int i=0; i<n; i++){
-            a[i] = sc.nextInt();
-            if (a[i] < num){
-                System.out.print(a[i]);
-                System.out.print(' ');
+        for(int i=0; i<N; i++){
+            array[i] = sc.nextInt();
+            if(array[i] < X){
+                System.out.print(array[i]+" ");
             }
         }
-        
+        sc.close();
     }
 }
