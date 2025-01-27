@@ -1,14 +1,13 @@
 import java.util.*;
 import java.io.*;
 
-public class Main {
+public class Main{
     static ArrayList<Integer>[] linkedInfo;
     static boolean[] Bvisited;
     static boolean[] Dvisited;
     static Queue<Integer> queue;
     static StringBuilder sb = new StringBuilder();
-
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine(), " ");
         
@@ -18,10 +17,10 @@ public class Main {
         
         // 연결정보 저장
         linkedInfo = new ArrayList[N+1];
-        for(int i = 0; i < linkedInfo.length; i++) { 
+        for(int i=0; i<linkedInfo.length; i++){ 
             linkedInfo[i] = new ArrayList<>();
         }
-        for(int i = 0; i < M; i++) {
+        for(int i=0; i<M; i++){
             st = new StringTokenizer(br.readLine(), " ");
             int s = Integer.parseInt(st.nextToken());
             int e = Integer.parseInt(st.nextToken());
@@ -30,7 +29,7 @@ public class Main {
         }
         
         // 각 노드에 대해 연결된 노드들을 오름차순으로 정렬
-        for(int i = 1; i <= N; i++) {
+        for(int i=1; i<=N; i++){
             Collections.sort(linkedInfo[i]);
         }
         
@@ -47,30 +46,28 @@ public class Main {
         System.out.println(sb);
     }
     
-    static void BFS(int i) {
+    static void BFS(int i){
         queue = new LinkedList<>();
         Bvisited[i] = true;
+        sb.append(i).append(" ");
         queue.add(i);
-        
-        while(!queue.isEmpty()) {
-            int n = queue.poll();
-            sb.append(n).append(" ");
-            
-            for(int num : linkedInfo[n]) {
-                if(!Bvisited[num]) {
+        while(queue.size() != 0){
+            int n = queue.remove();
+            for(int num : linkedInfo[n]){
+                if(!Bvisited[num]){
                     Bvisited[num] = true;
+                    sb.append(num).append(" ");
                     queue.add(num);
                 }
             }
         }
     }
     
-    static void DFS(int i) {
+    static void DFS(int i){
         Dvisited[i] = true;
         sb.append(i).append(" ");
-        
-        for(int num : linkedInfo[i]) {
-            if(!Dvisited[num]) {
+        for(int num : linkedInfo[i]){
+            if(!Dvisited[num]){
                 DFS(num);
             }
         }
