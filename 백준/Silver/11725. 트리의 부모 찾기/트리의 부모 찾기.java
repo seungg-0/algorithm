@@ -27,6 +27,7 @@ public class Main{
             linkedInfo[e].add(s);
         }
         
+        visited[1] = true;
         DFS(1);
         for(int i=2; i<=N; i++){
             System.out.println(answer[i]);
@@ -34,9 +35,9 @@ public class Main{
     }
     
     static void DFS(int i){
-        visited[i] = true;
         for(int num : linkedInfo[i]){
             if(!visited[num]){
+                visited[num] = true;
                 answer[num] = i; // 부모 정보 저장
                 DFS(num);
             }
