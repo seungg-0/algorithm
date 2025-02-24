@@ -5,20 +5,31 @@ public class Main{
     public static void main(String[] args)throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int N = Integer.parseInt(br.readLine());
+        int[] windows = new int[N];
         
-        int accumulate = 0, cnt = 0;
-        for(int i=1; i<=N; i++){
-            accumulate = i;
-            if(accumulate==N){
+        for(int i=0; i<N; i++){
+            windows[i] = i+1;
+        }
+        
+        int left = 0, right = 0, cnt = 0;
+        int total = windows[0];
+        while(right<N){
+            if(total==N){
                 cnt++;
-            }
-            for(int j=i+1; j<=N; j++){
-                accumulate += j;
-                if(accumulate>N){
+                right++;
+                if(right>=N){
                     break;
-                } else if(accumulate==N){
-                    cnt++;
                 }
+                total += windows[right];
+            } else if(total<N){
+                right++;
+                if(right>=N){
+                    break;
+                }
+                total += windows[right];
+            } else{
+                total -= windows[left];
+                left++;
             }
         }
         System.out.println(cnt);
