@@ -52,7 +52,7 @@ public class Main{
                 boolean check = true; // 거짓말 가능한 파티인가?
                 
                 for(int p : party.get(i)){
-                    if(isknowPerson[find(par[p])]){ // true : 진실을 아는 사람
+                    if(isknowPerson[find(p)]){ // true : 진실을 아는 사람
                         check = false;
                         break; // 탐색종료
                     }
