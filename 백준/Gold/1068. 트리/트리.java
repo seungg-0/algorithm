@@ -44,25 +44,15 @@ public class Main{
         
         // 리프노드 세기
         int answer = 0;
-        queue = new LinkedList<>();
         for(int i=0; i<N; i++){
+            if (isDeleted[i]) continue;
             boolean isLeaf = true;
-            if(!isDeleted[i]){
-                queue.add(i);
-                while(!queue.isEmpty()){
-                    int node = queue.poll();
-                    for(int n : tree[node]){
-                        if(!isDeleted[n]){
-                            isLeaf = false;
-                        } else{
-                            queue.add(n);
-                        }
-                    }
+            for(int n : tree[i]){
+                if(!isDeleted[n]){
+                    isLeaf = false;
+                    break;
                 }
-            } else{
-                isLeaf = false;
             }
-            
             if(isLeaf){
                 answer++;
             } 
