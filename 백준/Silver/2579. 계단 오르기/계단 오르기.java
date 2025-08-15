@@ -1,29 +1,37 @@
-import java.util.*;
+// 연속 세칸 x
+// 한칸 혹은 두칸 
+// 마지막 밟아야 함 
+
 import java.io.*;
+import java.util.*;
 
 public class Main{
     public static void main(String[] args)throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         
-        int N = Integer.parseInt(br.readLine());
-        int[] stairs = new int[N+1];
-        int[] dp = new int[N+1];
+        int numStairs = Integer.parseInt(br.readLine()); // 계단 수 입력받기
+        int[] stairScore = new int[numStairs+1]; // 계단 점수 저장할 배열
+        int[] dp = new int[numStairs+1];
         
-        for(int i=1; i<=N; i++){
-            stairs[i] = Integer.parseInt(br.readLine());
+        for(int i=1; i<=numStairs; i++){ // 계단 점수 입력받기 [범위 주의]
+            stairScore[i] = Integer.parseInt(br.readLine());
+        }
+
+        // DP 
+        // 연속세칸 아닌지 확인, 마지막칸 밟았는지 확인
+        // 다음칸, 다다음칸 중 합계 큰거 선택
+        
+        dp[1] = stairScore[1]; // 첫 번째 계단에서의 최적해 선택지는 하나 ! 
+        
+        if(numStairs>=2){ // 두 번째 계단에서의 최선
+            dp[2] = Math.max(stairScore[1]+stairScore[2], stairScore[2]);
         }
         
-        dp[1] = stairs[1]; // 첫 번째 계단에서의 최적해 선택지는 하나 뿐
-        
-        if(N>=2){
-            dp[2] = Math.max(stairs[1]+stairs[2], stairs[2]);
+        for(int i=3; i<=numStairs; i++){
+            dp[i] = Math.max(dp[i-3]+stairScore[i-1]+stairScore[i], dp[i-2]+stairScore[i]);
         }
         
-        for(int i=3; i<=N; i++){
-            dp[i] = Math.max(dp[i-2]+stairs[i], dp[i-3]+stairs[i-1]+stairs[i]);
-        }
-        
-        System.out.println(dp[N]);
+        System.out.println(dp[numStairs]);
         
     }
 }
