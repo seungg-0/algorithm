@@ -2,7 +2,7 @@
 // 웜홀로 도착하면 시간 뒤로감 
 // 음의 사이클 찾아내는 문제 -> 벨만 포드
 
-// 음의 사이클이 있으면 YES, 없으면 NO 
+// 음의 사이클이 있으면 YES, 없으면 NO (최단거리는 안구해도 됨)
 
 import java.util.*;
 import java.io.*;
@@ -36,25 +36,20 @@ public class Main{
                 edges[h] = new Edge(start, end, -cost); // 웜홀은 방향 있어서 단방향 정보 입력
             }
             
-            // 벨만 포드 최단거리 구하기
+            // 벨만 포드
             int[] D = new int[N+1];
-            Arrays.fill(D, 0); // 어떤 점에서 시작하든 음수 사이클만 찾으면 됨 (모든 정점을 시작점으로 탐색하기 위해 0으로 초기화)
-            for(int h=1; h<N; h++){
+            boolean flag = false;
+            Arrays.fill(D, 0); // [정답참고] 어떤 점에서 시작하든 음수 사이클만 찾으면 됨 (모든 정점을 시작점으로 탐색하기 위해 0으로 초기화)
+            for(int h=1; h<=N; h++){
                 for(int j=0; j<(2*M+W); j++){
                     Edge edge = edges[j];
-                    if(D[edge.start]!=Integer.MAX_VALUE && (D[edge.start]+edge.cost) < D[edge.end]){
+                    if((D[edge.start]+edge.cost) < D[edge.end]){
                         D[edge.end] = D[edge.start]+edge.cost; // 갱신
+                        if(h==N){ // 음수 사이클 존재
+                            flag = true;
+                            break;
+                        }
                     }
-                }
-            }
-            
-            // 음의 사이클 존재하는지 확인
-            boolean flag = false;
-            for(int j=0; j<(2*M+W); j++){
-                Edge edge = edges[j];
-                if(D[edge.start]!=Integer.MAX_VALUE && (D[edge.start]+edge.cost)<D[edge.end]){
-                    flag = true;
-                    break;
                 }
             }
             if(flag){
