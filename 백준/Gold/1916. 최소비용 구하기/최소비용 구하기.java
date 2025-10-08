@@ -1,74 +1,74 @@
 import java.io.*;
 import java.util.*;
 
-public class Main {
-    static class Node implements Comparable<Node> {
-        int city;
-        int cost;
-
-        Node(int city, int cost) {
-            this.city = city;
-            this.cost = cost;
-        }
-
-        @Override
-        public int compareTo(Node o) {
-            return this.cost - o.cost; // 비용이 작은 순서로 정렬
-        }
-    }
-
-    public static void main(String[] args) throws IOException {
+public class Main{
+    static List<Node>[] graph; // [암기]
+    static int start, end;
+    
+    public static void main(String[] args)throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
-
+        
         int N = Integer.parseInt(br.readLine());
         int M = Integer.parseInt(br.readLine());
-
-        ArrayList<ArrayList<int[]>> busLine = new ArrayList<>();
-        for (int i = 0; i <= N; i++) {
-            busLine.add(new ArrayList<>());
+        
+        graph = new ArrayList[N+1]; // [암기]
+        for(int i=0; i<=N; i++){
+            graph[i] = new ArrayList<>();
         }
-
-        // 버스 정보 입력
-        for (int i = 0; i < M; i++) {
+        
+        int v, w, cost;
+        for(int i=0; i<M; i++){
             st = new StringTokenizer(br.readLine());
-            int s = Integer.parseInt(st.nextToken());
-            int e = Integer.parseInt(st.nextToken());
-            int c = Integer.parseInt(st.nextToken());
-            busLine.get(s).add(new int[]{e, c});
+            v = Integer.parseInt(st.nextToken());
+            w = Integer.parseInt(st.nextToken());
+            cost = Integer.parseInt(st.nextToken());
+            graph[v].add(new Node(w, cost));
         }
-
+        
         st = new StringTokenizer(br.readLine());
-        int start = Integer.parseInt(st.nextToken());
-        int end = Integer.parseInt(st.nextToken());
-
-        // 다익스트라용 dist 배열 초기화
-        int[] dist = new int[N + 1];
+        start = Integer.parseInt(st.nextToken());
+        end = Integer.parseInt(st.nextToken());
+        
+        dijkstra(N, start);
+    }
+    
+    static class Node implements Comparable<Node>{
+        int index;
+        int cost;
+        
+        public Node(int i, int c){ // [형태 암기]
+            this.index = i;
+            this.cost = c;
+        }
+        
+        @Override
+        public int compareTo(Node n){ // [형태 암기]
+            return Integer.compare(this.cost, n.cost);
+        }
+    }
+    
+    static void dijkstra(int n, int start){
+        boolean[] visited = new boolean[n+1];
+        int[] dist = new int[n+1];
         Arrays.fill(dist, Integer.MAX_VALUE);
-        dist[start] = 0;
-
+        dist[start] = 0; // [잊지 말기]
+        
         PriorityQueue<Node> pq = new PriorityQueue<>();
-        pq.offer(new Node(start, 0));
-
-        while (!pq.isEmpty()) {
-            Node current = pq.poll();
-            int city = current.city;
-            int cost = current.cost;
-
-            // 이미 더 작은 비용으로 방문했으면 스킵
-            if (cost > dist[city]) continue;
-
-            for (int[] next : busLine.get(city)) {
-                int nextCity = next[0];
-                int nextCost = next[1];
-
-                if (dist[nextCity] > dist[city] + nextCost) {
-                    dist[nextCity] = dist[city] + nextCost;
-                    pq.offer(new Node(nextCity, dist[nextCity]));
+        pq.offer(new Node(start, 0)); 
+        while(!pq.isEmpty()){
+            Node now = pq.poll();
+            
+            if(visited[now.index]) continue;
+            visited[now.index] = true;
+            
+            for(Node next : graph[now.index]){
+                if(dist[next.index] > dist[now.index]+next.cost){
+                    dist[next.index] = dist[now.index] + next.cost;
+                    pq.offer(new Node(next.index, dist[next.index])); // [누적 비용 넣어야 함]
                 }
             }
         }
-
         System.out.println(dist[end]);
     }
 }
