@@ -13,7 +13,7 @@ public class Main{
         int N = Integer.parseInt(br.readLine());
         int M = Integer.parseInt(br.readLine());
         
-        long[][] graph = new long[N+1][N+1];
+        int[][] graph = new int[N+1][N+1];
         
         int s, e, c;
         for(int i=0; i<M; i++){
@@ -21,10 +21,10 @@ public class Main{
             s = Integer.parseInt(st.nextToken());
             e = Integer.parseInt(st.nextToken());
             c = Integer.parseInt(st.nextToken());
-            if(graph[s][e]>(long)0){ // 초기 비용 저장
-                graph[s][e] = Math.min(graph[s][e], (long)c);
+            if(graph[s][e]>0){ // 초기 비용 저장
+                graph[s][e] = Math.min(graph[s][e], c);
             } else{
-                graph[s][e] = (long)c;
+                graph[s][e] = c;
             }
         }
         
