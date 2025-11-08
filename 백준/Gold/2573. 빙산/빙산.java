@@ -1,5 +1,4 @@
-// BFS 
-// 1. 1년 지날 때마다 빙산 녹이고 -> (걍 그래프탐색 ?)
+// 1. 1년 지날 때마다 빙산 녹이고 -> 지도 새로 그리기
 // 2. 덩어리 몇 개인지 확인하고 -> BFS
 // 1. 2. 를 계속 반복해야 함
 
@@ -15,13 +14,11 @@ public class Main{
     static Queue<int[]> queue;
     public static void main(String[] args)throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        
         StringTokenizer st = new StringTokenizer(br.readLine());
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
         
         map = new int[N][M];
-        
         for(int i=0; i<N; i++){ // 초기 빙하정보 저장 
             st = new StringTokenizer(br.readLine());
             for(int j=0; j<M; j++){
@@ -31,8 +28,8 @@ public class Main{
         
         int years = 0;
         
-        // 2. 덩어리 몇 개인지 확인 
         while(true){
+            // 2. 덩어리 몇 개인지 확인 
             int islands = counting();
             if(islands>=2){
                 System.out.println(years);
@@ -42,7 +39,7 @@ public class Main{
                 break;
             }else{
                 // 1. 1년 보내고 빙산 녹이기
-                int[][] temp = new int[N][M]; // 임시 맵을 만들어주면 됨
+                int[][] temp = new int[N][M]; // 임시 맵을 만들어주면 됨 [중요]
                 for(int i=0; i<N; i++){
                     for(int j=0; j<M; j++){
                         // 상하좌우 확인
@@ -54,11 +51,11 @@ public class Main{
                                 melts++;
                             }
                         }
-                        temp[i][j] = Math.max(0, map[i][j] - melts);// 이렇게 하면 음수 안생김
+                        temp[i][j] = Math.max(0, map[i][j] - melts);// 이렇게 하면 음수 안생김 [중요]
                     }
                 }
-                years++;
-                map = temp;
+                years++; // 1년 지남
+                map = temp; // [중요]
                 // System.out.println(Arrays.deepToString(map)); // 이중배열 디버깅 방법 봐두기
             }
         }
@@ -81,7 +78,7 @@ public class Main{
         return;
     }
     
-    static int counting(){
+    static int counting(){ // 빙산덩어리 갯수 세기
         int cnt = 0;
         visited = new boolean[N][M];
         for(int i=0; i<N; i++){
