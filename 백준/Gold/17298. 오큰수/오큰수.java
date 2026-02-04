@@ -1,43 +1,38 @@
 import java.io.*;
 import java.util.*;
 
-public class Main {
-    public static void main(String[] args) throws Exception {
+public class Main{
+    public static void main(String[] args)throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        
+        // N 입력 받기
         int N = Integer.parseInt(br.readLine());
-
-        int[] A = new int[N];
-        int[] ans = new int[N];
-
+        
+        int[] input = new int[N];
         StringTokenizer st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < N; i++) {
-            A[i] = Integer.parseInt(st.nextToken());
-            ans[i] = -1; // 기본값: 오큰수 없음
+        
+        for(int i=0; i<N; i++){
+            input[i] = Integer.parseInt(st.nextToken());
         }
-
-        // 인덱스를 저장하는 스택
         Stack<Integer> stack = new Stack<>();
-
-        for (int i = 0; i < N; i++) {
-
-            // 현재 값 A[i]가
-            // 스택 top에 있는 과거 값보다 크면
-            while (!stack.isEmpty() && A[stack.peek()] < A[i]) {
-                // 디버깅
-                // System.out.println("peek: "+Integer.toString(stack.peek())+"A[i]"+Integer.toString(A[i]));
-                int idx = stack.pop();   // 오큰수 찾은 인덱스
-                ans[idx] = A[i];         // 현재 값이 오큰수
+        
+        int tmp = 0;
+        int[] result = new int[N];
+        Arrays.fill(result, -1);
+        for(int i=0; i<N; i++){ // 순회 한 번만 해야함
+            
+            while(!stack.empty()&&input[stack.peek()]<input[i]){ // 오큰수 찾았으면
+                tmp = stack.pop(); // 오큰수 찾았으면 stack 에서 빼기 (오큰수 찾는 대상 수의 인덱스)
+                result[tmp] = input[i]; // 오큰수 입력
             }
-
-            // 아직 오큰수를 못 찾은 현재 인덱스
-            stack.push(i);
+            stack.push(i); // 오큰수 찾는 대상 수의 인덱스 넣기
         }
-
-        // 출력
+        
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < N; i++) {
-            sb.append(ans[i]).append(' ');
+        for(int i=0; i<N; i++){
+            sb.append(result[i]).append(" ");
         }
+        
         System.out.println(sb);
     }
 }
