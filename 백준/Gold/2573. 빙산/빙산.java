@@ -1,99 +1,96 @@
-// 1. 1년 지날 때마다 빙산 녹이고 -> 지도 새로 그리기
-// 2. 덩어리 몇 개인지 확인하고 -> BFS
-// 1. 2. 를 계속 반복해야 함
-
 import java.util.*;
 import java.io.*;
 
 public class Main{
-    static int[][] map;
     static int[] dx = {-1, 1, 0, 0};
     static int[] dy = {0, 0, -1, 1};
-    static int N, M;
-    static boolean[][] visited;
-    static Queue<int[]> queue;
+    static int year = 0;
+    static int[][] map;
+    static int island = 0;
+    static int x, y;
+    
     public static void main(String[] args)throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
         
-        map = new int[N][M];
-        for(int i=0; i<N; i++){ // 초기 빙하정보 저장 
+        x = Integer.parseInt(st.nextToken());
+        y = Integer.parseInt(st.nextToken());
+        map = new int[x][y];
+        
+        for(int i=0; i<x; i++){
             st = new StringTokenizer(br.readLine());
-            for(int j=0; j<M; j++){
+            for(int j=0; j<y; j++){
+                // 초기 빙하 정보 입력 받기
                 map[i][j] = Integer.parseInt(st.nextToken());
             }
         }
         
-        int years = 0;
-        
         while(true){
-            // 2. 덩어리 몇 개인지 확인 
-            int islands = counting();
-            if(islands>=2){
-                System.out.println(years);
+            island = counting(map);
+            if(island>=2){ // 두 덩어리 이상으로 분리
+                System.out.println(year);
                 break;
-            }else if(islands==0){
+            } else if (island==0){
                 System.out.println(0);
                 break;
-            }else{
-                // 1. 1년 보내고 빙산 녹이기
-                int[][] temp = new int[N][M]; // 임시 맵을 만들어주면 됨 [중요]
-                for(int i=0; i<N; i++){
-                    for(int j=0; j<M; j++){
-                        // 상하좌우 확인
-                        int melts = 0;
-                        for(int h=0; h<4; h++){
-                            int ni = i+dx[h];
-                            int nj = j+dy[h];
-                            if(ni>=0 && ni<N && nj>=0 && nj<M && map[ni][nj] == 0){
-                                melts++;
+            } else{ // 1년 지나고 빙하 녹이기
+                int[][] nmap = new int[x][y]; // 임시 맵을 만들어주면 됨 [중요]
+                // int[][] nmap = map; // 이렇게 하면 안됨 ! 참조 공유가 됨
+                int nx, ny;
+                for(int i=0; i<x; i++){
+                    for(int j=0; j<y; j++){
+                        if(map[i][j]!=0){ // 0 아니면 녹일 대상
+                            int num = 0;
+                            for(int ii=0; ii<4; ii++){
+                                nx = i + dx[ii];
+                                ny = j + dy[ii];
+                                if(0<=nx && nx<x && 0<=ny && ny<y && map[nx][ny]==0){
+                                    num++;
+                                }
                             }
+                            nmap[i][j] = Math.max(0, map[i][j]-num); // 빙하 녹이기
                         }
-                        temp[i][j] = Math.max(0, map[i][j] - melts);// 이렇게 하면 음수 안생김 [중요]
                     }
                 }
-                years++; // 1년 지남
-                map = temp; // [중요]
-                // System.out.println(Arrays.deepToString(map)); // 이중배열 디버깅 방법 봐두기
+                year++;
+                map = nmap;
             }
         }
+        
     }
     
-    static void BFS(){
-        while(!queue.isEmpty()){
-            int[] xy = queue.poll();
-            int x = xy[0];
-            int y = xy[1];
-            for(int i=0; i<4; i++){
-                int nx = x+dx[i];
-                int ny = y+dy[i];
-                if(!visited[nx][ny] && nx >= 0 && nx < N && ny >= 0 && ny < M && map[nx][ny]>0){
-                    visited[nx][ny] = true;
-                    queue.offer(new int[] {nx, ny});
-                }
-            }
-        }
-        return;
-    }
-    
-    static int counting(){ // 빙산덩어리 갯수 세기
+    // 덩어리 세기
+    static int counting(int[][] graph){
+        boolean[][] visited = new boolean[x][y];
         int cnt = 0;
-        visited = new boolean[N][M];
-        for(int i=0; i<N; i++){
-            for(int j=0; j<M; j++){
-                if(!visited[i][j]){
+        for(int i=0; i<x; i++){
+            for(int j=0; j<y; j++){
+                if(graph[i][j]!=0 && !visited[i][j]){
+                    cnt++;
                     visited[i][j] = true;
-                    if(map[i][j]>0){
-                        queue = new LinkedList<>();
-                        queue.offer(new int[] {i, j});
-                        BFS();
-                        cnt++;
-                    }
+                    BFS(graph, i, j, visited);
                 }
             }
         }
         return cnt;
-    }   
+    }
+    
+    static void BFS(int[][] graph, int tx, int ty, boolean[][] visited){
+        Queue<int[]> queue = new LinkedList<>();
+        queue.offer(new int[] {tx, ty});
+        int nx, ny, xx, yy;
+        while(!queue.isEmpty()){
+            int[] tmp = queue.poll();
+            xx = tmp[0];
+            yy = tmp[1];
+            for(int i=0; i<4; i++){
+                nx = xx + dx[i];
+                ny = yy + dy[i];
+                if(0<=nx && nx < x && 0 <= ny && ny<y && !visited[nx][ny] && graph[nx][ny]!=0){
+                    queue.offer(new int[] {nx, ny});
+                    visited[nx][ny] = true;
+                }
+            }
+        }
+    }
 }
