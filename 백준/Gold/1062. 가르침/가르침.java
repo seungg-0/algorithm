@@ -1,79 +1,83 @@
 import java.util.*;
 import java.io.*;
 
-// 되도록이면 많은 단어를 읽을 수 있도록 
-
 public class Main{
-    static int N, K, result = Integer.MIN_VALUE;
-    static boolean[] alphabet = new boolean[26]; // 배운 알파벳 확인 배열
-    static ArrayList<String> word = new ArrayList<>(); // 입력되는 단어 저장 리스트
+    static ArrayList<String> words = new ArrayList<>();
+    static int N, K;
+    static boolean[] alphabet = new boolean[26];
+    static int result = 0;
     
     public static void main(String[] args)throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st;
+        StringTokenizer st = new StringTokenizer(br.readLine());
         
-        st = new StringTokenizer(br.readLine());
         N = Integer.parseInt(st.nextToken());
         K = Integer.parseInt(st.nextToken());
-        alphabetInit(); // 'a' 'c', 'i', 'm', 't' 배웠다고 초기화 해야 함
+        
+        alphaInit();
+        
         if(K<5){
-            System.out.println(0); // 배울 수 있는 글자 5개 미만
-        } else if(K==26){
-            System.out.println(N); // 배울 수 있는 글자가 26개일 때
+            System.out.println(0); // "anta", "tica" 읽을 수 없으면 읽을 수 있는 단어의 수 0
+        } else if(K==26){ // 모든 알파벳 읽을 수 있으면 전체 단어 읽을 수 있음
+            System.out.println(N);
         } else{
             for(int i=0; i<N; i++){
-                String temp = br.readLine();
-                temp.replace("anta", "");
-                temp.replace("tica", "");
-                word.add(temp); // 입력받은 단어들
+                String tmp = br.readLine(); // 단어 하나씩 읽어들이기
+                tmp = tmp.replace("anta", ""); // 모든 단어 anta로 시작 -> 잘라버리기
+                tmp = tmp.replace("tica", ""); // 모든 단어 tica로 끝 -> 잘라버리기
+                words.add(tmp); // 단어 목록에 놓기
+                // System.out.println(words);
             }
-            cal(1, 5); // 모든 경우의 수에서 읽을 수 있는 단어 최대 수 구하기
-            // 5개는 이미 읽을 수 있음, b부터 탐색 (a는 이미 배움)
+            DFS(1, 5); // 기본적으로 anta tica의 5단어는 알고 시작, b부터 탐색
+            // DFS로 탐색하며 result 계산하기
             System.out.println(result);
         }
     }
-    static void cal(int alpha, int cur){
-        if(cur==K){ // 배울 수 있는 최대 수랑 똑같아지면 배울 수 있는 단어 수 세기
-            wordCheck();
+    static void DFS(int n, int cnt){
+        // 종료조건 (배운 글자가 K개가 되면 종료하고 읽을 수 있는 단어의 수 세어야 함)
+        if(cnt==K){
+            counting();
             return;
         }
-        for(int i=alpha; i<26; i++){
-            if(alphabet[i]){
-                continue;
+        
+        // 26가지 단어 중 조합을 만들어 줘야 함 (깊이우선 탐색)
+        for(int i=n; i<26; i++){
+            if(!alphabet[i]){ // 모르는 단어면
+                alphabet[i] = true; // 하나 배우기
+                DFS(i, cnt+1);
+                alphabet[i] = false;
             }
-            alphabet[i] = true;
-            cal(i, cur+1);
-            alphabet[i] = false;
         }
         return;
     }
     
-    // 배운 알파벳으로 단어 몇 개 읽을 수 있는지 확인하기
-    static void wordCheck(){
-        int count = 0;
-        for(int i=0; i<word.size(); i++){ // 입력받은 단어들 확인
-            String temp = word.get(i); // 단어 하나 꺼내기
-            boolean ck = false;
-            if(!temp.equals("")){
-                int size = temp.length();
-                for(int j=0; j<size; j++){
-                    if(!alphabet[temp.charAt(j)-97]){
-                        ck = true;
-                        break;
-                    }
+    static void counting(){
+        String word;
+        int size = 0;
+        int cnt = 0;
+        for(int i=0; i<N; i++){ // 단어 하나씩 순회하며 읽을 수 있는 단어 갯수 세기
+            word = words.get(i); // 단어 하나 꺼내기
+            //System.out.println(word);
+            //System.out.println(Arrays.toString(alphabet));
+            size = word.length(); // String 길이는 length() 로 구함 !! 
+            boolean readable = true;
+            for(int j=0; j<size; j++){
+                if(!alphabet[word.charAt(j)-97]){ // 아는 단어가 아니면 (97 외우기_char 형태 a=1로 변환)
+                    readable = false;
+                    break;
                 }
             }
-            if(!ck){
-                count++;
+            if(readable){
+                cnt++;
             }
         }
-        result = Math.max(result, count);
-            return;
+        result = Math.max(result, cnt); // result 업데이트 해주기
+        return;
     }
     
-    static void alphabetInit(){
-        // 남극언어의 모든 단어는 "anta"로 시작하고, "tica"로 끝남 
-        alphabet[0] = alphabet[2] = alphabet[8] = alphabet[13] = alphabet[19] = true;
+    // a n t i c 0 12 19 8 2
+    static void alphaInit(){
+        alphabet[0] = alphabet[13] = alphabet[19] = alphabet[8] = alphabet[2] = true;
         return;
     }
 }
