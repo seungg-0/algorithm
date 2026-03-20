@@ -1,114 +1,91 @@
-// 장애물의 위치 3곳 순서 상관 없음 -> 순열이 아닌 조합 이용 
+// 3개 장애물을 설치하여 모든 학생들을 감시로부터 피할 수 있는지 여부 출력 
+// 상하좌우 한 칸씩이 아니라 쭉 탐색해야 함 (while)
+// 빈 자리 탐색하며 3개 설치시 검사하는 방식
 
-import java.io.*;
 import java.util.*;
+import java.io.*;
 
 public class Main{
-    static ArrayList<Node> student = new ArrayList<>();
-    static int n;
     static char[][] map;
-    static int[] dx = {0, 0, -1, 1};
-    static int[] dy = {-1, 1, 0, 0};
+    static int N;
+    static int[] dx = {-1, 1, 0, 0};
+    static int[] dy = {0, 0, -1, 1};
+    static ArrayList<Teacher> teachers = new ArrayList<>();
     public static void main(String[] args)throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
-        n = Integer.parseInt(br.readLine());
-        map = new char[n][n];
         
-        for(int i=0; i<n; i++){
+        N = Integer.parseInt(br.readLine());
+        map = new char[N][N]; // 초기화 잊지 말기 [중요]
+        for(int i=0; i<N; i++){
             st = new StringTokenizer(br.readLine());
-            for(int j=0; j<n; j++){
-                map[i][j] = st.nextToken().charAt(0);
-                if(map[i][j]=='S'){
-                    student.add(new Node(i, j));
+            for(int j=0; j<N; j++){
+                char tmp = st.nextToken().charAt(0);
+                if(tmp=='T'){
+                    teachers.add(new Teacher(i, j));
                 }
+                map[i][j] = tmp;
             }
         }
+        
         dfs(0);
         System.out.println("NO");
         
     }
     
-    static void dfs(int wall){
-        if(wall == 3){
-            bfs(); // 가림막 세개 다 세우면 YES or NO 검사
+    static void dfs(int cnt){
+        // 종료조건
+        if(cnt==3){
+            if(avoid()){
+                System.out.println("YES");
+                System.exit(0);
+            }; // 감시 가능한지 확인
             return;
         }
         
-        for(int i=0; i<n; i++){
-            for(int j=0; j<n; j++){
-                if(map[i][j]=='X'){
-                    map[i][j] = 'O'; // 빈칸이면 가림막 세우기
-                    dfs(wall+1);
+        for(int i=0; i<N; i++){
+            for(int j=0; j<N; j++){
+                if(map[i][j]=='X'){ // 빈 곳일 경우 가림막 설치
+                    map[i][j] = 'O';
+                    dfs(cnt+1);
                     map[i][j] = 'X'; // 백트래킹
                 }
             }
         }
     }
     
-    static void bfs(){
-        Queue<Node> q = new LinkedList<>();
-        char[][] copyMap = new char[n][n];
-        boolean[][] check = new boolean[n][n];
-        
-        for(int i=0; i<n; i++){
-            copyMap[i] = map[i].clone();
-        }
-        
-        // 선생님 위치 저장하기 (큐에 다 넣음)
-        for(int i=0; i<n; i++){
-            for(int j=0; j<n; j++){
-                if(copyMap[i][j]=='T'){ // 선생님이면 학생 볼 수 있는지 검사해야함
-                    q.add(new Node(i, j));
-                    check[i][j] = true;
-                }
-            }
-        }
-        
-        // 모든 선생님 학생 볼 수 있는지 검사
-        while(!q.isEmpty()){
-            Node now = q.poll(); // 선생님 꺼내기
-            int x=now.x;
-            int y=now.y;
-            
-            for(int k=0; k<4; k++){
-                int nx = x+dx[k];
-                int ny = y+dy[k];
-                
-                // [핵심] if가 아니라 while로 상하좌우 끝까지 확인 !!!!!
-                while(0<=nx && nx<n && 0<=ny && ny<n){
-                    if(copyMap[nx][ny]!='O'){ // 가림막 만나기 전까지
-                        check[nx][ny] = true;
-                        nx += dx[k];
-                        ny += dy[k];
-                    }else{
+    static boolean avoid(){ // 감시 가능한지 확인
+        boolean flag = true;
+        for(Teacher teacher : teachers){
+            int nx = teacher.x;
+            int ny = teacher.y;
+            for(int k=0; k<4; k++){ // 상하좌우 확인
+                nx = teacher.x;
+                ny = teacher.y;
+                while(true){ // 상하좌우 끝까지 확인
+                    nx += dx[k]; // 좌표 갱신 += 로 해야 함. [주의]
+                    ny += dy[k];
+                    if(nx<0 || nx>=N || ny<0 || ny>=N){
+                         break;
+                    }
+                    if(map[nx][ny]=='O') {
                         break;
+                    }
+                    if(map[nx][ny]=='S'){ // 학생 감시 가능
+                        flag = false;
+                        return false;
                     }
                 }
             }
-
         }
-        
-        if(catchStudent(check)){
-            System.out.println("YES");
-            System.exit(0);
-        }
+        return flag; 
     }
     
-    static boolean catchStudent(boolean[][] check){
-        for(Node node : student){ // 학생 하나씩 꺼내서 확인
-            if(check[node.x][node.y]==true){
-                return false; // 감시 피하기 실패
-            }
-        }
-        return true; // 감시 피하기 성공
-    }
     
-    static class Node{
+    static class Teacher{
         int x;
         int y;
-        
-        public Node(int x, int y){
+        Teacher(int x, int y){
             this.x = x;
             this.y = y;
         }
