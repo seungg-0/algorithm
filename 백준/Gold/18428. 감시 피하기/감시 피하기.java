@@ -10,7 +10,9 @@ public class Main{
     static int N;
     static int[] dx = {-1, 1, 0, 0};
     static int[] dy = {0, 0, -1, 1};
-    static ArrayList<Teacher> teachers = new ArrayList<>();
+    static boolean found = false;
+    static ArrayList<Node> teachers = new ArrayList<>();
+    static ArrayList<Node> emptys = new ArrayList<>();
     public static void main(String[] args)throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
@@ -22,41 +24,42 @@ public class Main{
             for(int j=0; j<N; j++){
                 char tmp = st.nextToken().charAt(0);
                 if(tmp=='T'){
-                    teachers.add(new Teacher(i, j));
+                    teachers.add(new Node(i, j));
+                } else if (tmp=='X'){
+                    emptys.add(new Node(i, j));
                 }
                 map[i][j] = tmp;
             }
         }
         
         dfs(0);
-        System.out.println("NO");
+        System.out.println(found ? "YES" : "NO"); // 감시 피할 수 있는 방법 찾았는지
         
     }
     
-    static void dfs(int cnt){
+    static void dfs(int WALL_COUNT){
         // 종료조건
-        if(cnt==3){
-            if(avoid()){
-                System.out.println("YES");
-                System.exit(0);
-            }; // 감시 가능한지 확인
+        if(WALL_COUNT==3){
+            if(avoid()){ // 감시 피할 수 있는 방법 있는지 확인
+                found = true;
+                return;
+            }; 
             return;
         }
         
-        for(int i=0; i<N; i++){
-            for(int j=0; j<N; j++){
-                if(map[i][j]=='X'){ // 빈 곳일 경우 가림막 설치
-                    map[i][j] = 'O';
-                    dfs(cnt+1);
-                    map[i][j] = 'X'; // 백트래킹
-                }
+        // 순열이 아닌 조합으로 가림막 3개 설치
+        for(Node empty : emptys){
+            int i=empty.x;
+            int j=empty.y;
+            if(map[i][j]=='X'){ // 빈 곳일 경우 가림막 설치
+                map[i][j] = 'O';
+                dfs(WALL_COUNT+1);
+                map[i][j] = 'X'; // 백트래킹
             }
         }
     }
-    
     static boolean avoid(){ // 감시 가능한지 확인
-        boolean flag = true;
-        for(Teacher teacher : teachers){
+        for(Node teacher : teachers){
             int nx = teacher.x;
             int ny = teacher.y;
             for(int k=0; k<4; k++){ // 상하좌우 확인
@@ -72,20 +75,19 @@ public class Main{
                         break;
                     }
                     if(map[nx][ny]=='S'){ // 학생 감시 가능
-                        flag = false;
                         return false;
                     }
                 }
             }
         }
-        return flag; 
+        return true; 
     }
     
     
-    static class Teacher{
+    static class Node{
         int x;
         int y;
-        Teacher(int x, int y){
+        Node(int x, int y){
             this.x = x;
             this.y = y;
         }
