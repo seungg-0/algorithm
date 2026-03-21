@@ -14,6 +14,7 @@ public class Main{
         StringTokenizer st;
         HashMap<Long, Long> map = new HashMap<>();
         map.put(0L, 1L);
+        // 위에 구문이 없으면 arr[0]=3, K=3 일 때, 카운트가 안됨
         st = new StringTokenizer(br.readLine());
         
         int N = Integer.parseInt(st.nextToken());
