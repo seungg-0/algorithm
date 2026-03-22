@@ -36,7 +36,7 @@ public class Main{
             int sum = inputs[left]+inputs[right];
             
             // [주의] 투 포인터는 "중간에 멈추면 안됨"
-            if(answer==Integer.MAX_VALUE || Math.abs(sum)<Math.abs(answer)){
+            if(Math.abs(sum)<Math.abs(answer)){
                 ansleft = left;
                 ansright = right;
             }
@@ -48,8 +48,7 @@ public class Main{
             } else if(sum>0){
                 right--;
             } else{
-                left++;
-                right--;
+                break; // 더 좋은 값 나올 수 없음
             }
         }
         System.out.println(inputs[ansleft]+" "+inputs[ansright]);
