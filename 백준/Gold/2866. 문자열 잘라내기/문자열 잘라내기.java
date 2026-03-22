@@ -6,7 +6,7 @@ import java.io.*;
 public class Main{
     static int R, C;
     static char[][] map;
-    static HashSet<String> set = new HashSet<>();
+    static String[] col;
     public static void main(String[] args)throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
@@ -23,15 +23,14 @@ public class Main{
             }
         }
         
-        // 문자열 만들어 놓기
-        StringBuilder sb;
+        // 문자열 만들어 놓기 (여기선 굳이 HashMap 쓸 필요 없음)
+        col = new String[C];
         for(int i=0; i<C; i++){
-            sb = new StringBuilder(); // 자바에서는 슬라이싱 문법이 없다. 
+            StringBuilder sb = new StringBuilder(); // 자바에서는 슬라이싱 문법이 없다. 
             for(int j=0; j<R; j++){
                 sb.append(map[j][i]); 
             }
-            String str = sb.toString();
-            set.add(str);
+            col[i] = sb.toString();
         }
         
         int answer = -1;
@@ -48,13 +47,13 @@ public class Main{
     }
     
     static boolean isUnique(int startRow){
-        HashSet<String> tmpSet = new HashSet<>();
-        for(String s : set){ // set에 있는 문자 하나씩 꺼내서 확인
-            String tmp = s.substring(startRow, R); // 잘라서 확인
-            if(tmpSet.contains(tmp)){
+        HashSet<String> set = new HashSet<>();
+        for(int i=0; i<C; i++){ // col에 있는 문자 하나씩 확인
+            String tmp = col[i].substring(startRow, R); // 잘라서 확인 (R전까지 자름)
+            if(set.contains(tmp)){
                 return false;
             }else{
-                tmpSet.add(tmp);
+                set.add(tmp);
             }
         }
         return true;
