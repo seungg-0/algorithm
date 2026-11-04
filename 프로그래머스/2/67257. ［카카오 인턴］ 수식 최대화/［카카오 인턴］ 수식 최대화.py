@@ -15,20 +15,16 @@ def solution(expression):
             idx = 0
             while(idx<len(tmp_expressions)):
                 if(tmp_expressions[idx]==oper):
+                    left = int(tmp_expressions[idx-1])
+                    right = int(tmp_expressions[idx+1])
                     if(oper=='+'):
-                        left = tmp_expressions[idx-1]
-                        right = tmp_expressions[idx+1]
-                        result = int(left)+int(right)
+                        result = left+right
                         tmp_expressions[idx-1:idx+2] = [str(result)] # [암기] [idx-1:idx+2] 처럼 범위있을 때 값 할당하려면 [] 로 묶어줘야 함 [result]
                     if(oper=='-'):
-                        left = tmp_expressions[idx-1]
-                        right = tmp_expressions[idx+1]
-                        result = int(left)-int(right)
+                        result = left-right
                         tmp_expressions[idx-1:idx+2] = [str(result)] # [암기] [idx-1:idx+2] 처럼 범위있을 때 값 할당하려면 [] 로 묶어줘야 함 [result]
                     if(oper=='*'):
-                        left = tmp_expressions[idx-1]
-                        right = tmp_expressions[idx+1]
-                        result = int(left)*int(right)
+                        result = left*right
                         tmp_expressions[idx-1:idx+2] = [str(result)] # [암기] [idx-1:idx+2] 처럼 범위있을 때 값 할당하려면 [] 로 묶어줘야 함 [result]
                     idx = 0
                 else:
